@@ -1,16 +1,30 @@
 import { test, expect } from '@playwright/test';
+import { users } from './data/users';
+import { loginAndCartSelectors } from './selectors/login-and-cart.selectors';
+
+test('invalid user sees an authentication error message', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com/');
+
+  await page.locator(loginAndCartSelectors.usernameInput).fill(users.invalid.username);
+  await page.locator(loginAndCartSelectors.passwordInput).fill(users.invalid.password);
+  await page.locator(loginAndCartSelectors.loginButton).click();
+
+  await expect(page.locator(loginAndCartSelectors.errorMessage)).toContainText(
+    'Username and password do not match',
+  );
+});
 
 test('valid user can log in and add one product to cart', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
 
-  await page.locator('[data-test="username"]').fill('standard_user');
-  await page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await page.locator(loginAndCartSelectors.usernameInput).fill(users.standard.username);
+  await page.locator(loginAndCartSelectors.passwordInput).fill(users.standard.password);
+  await page.locator(loginAndCartSelectors.loginButton).click();
 
   await expect(page).toHaveURL(/inventory/);
-  await expect(page.locator('[data-test="title"]')).toHaveText('Products');
+  await expect(page.locator(loginAndCartSelectors.pageTitle)).toHaveText('Products');
 
-  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator(loginAndCartSelectors.addBackpackButton).click();
 
-  await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
+  await expect(page.locator(loginAndCartSelectors.cartBadge)).toHaveText('1');
 });
