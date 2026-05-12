@@ -1,34 +1,35 @@
-# Portfolio QA E2E - Playwright
+# Portfolio QA E2E — Playwright + TypeScript
 
-Projet personnel de portfolio en assurance qualite axe sur l'automatisation de tests web end-to-end avec Playwright et TypeScript.
+![CI](https://github.com/tiagolp22/qa-playwright-ecommerce-tests-clean/actions/workflows/playwright.yml/badge.svg)
 
-L'objectif de ce depot est de demontrer une approche QA concrete sur un parcours e-commerce realiste:
+Projet de portfolio en assurance qualite, axe sur l'automatisation de tests web end-to-end avec Playwright et TypeScript.
 
-- connexion utilisateur
-- validation de comportements attendus
-- ajout au panier
-- verification d'etat de l'interface
-- evolution graduelle vers une suite de regression plus complete
+L'application cible est [Sauce Demo](https://www.saucedemo.com/), une application de demonstration e-commerce couramment utilisee pour pratiquer l'automatisation sur un flux realiste.
 
-Le site cible actuel est [Sauce Demo](https://www.saucedemo.com/), une application de demonstration souvent utilisee pour pratiquer l'automatisation de tests sur un flux de type commerce electronique.
+## Structure du projet
 
-## Ce que ce projet montre
+```
+pages/
+  login.page.ts       — navigation et actions sur la page de connexion
+  inventory.page.ts   — interactions avec la liste des produits
+  cart.page.ts        — gestion du panier
+  checkout.page.ts    — formulaire et confirmation de commande
+tests/
+  data/users.ts       — donnees de test centralisees
+  auth.spec.ts        — tests d'authentification
+  cart.spec.ts        — tests du panier
+  checkout.spec.ts    — parcours complet de commande
+```
 
-- tests fonctionnels E2E avec Playwright
-- utilisation de TypeScript
-- assertions claires sur l'URL, le contenu et l'etat du panier
-- structure de base prete a evoluer vers Page Object Model
-- execution locale et integration continue avec GitHub Actions
+## Scenarios couverts
 
-## Scenario actuellement automatise
-
-Le premier test couvre un parcours simple mais utile:
-
-1. ouvrir la page de connexion
-2. se connecter avec un utilisateur valide
-3. verifier l'acces a la page des produits
-4. ajouter un produit au panier
-5. confirmer que le panier affiche bien `1` article
+| Scenario | Tag | Statut |
+|---|---|---|
+| Connexion valide → page produits | @smoke | ✅ |
+| Identifiants invalides → message d'erreur | @smoke | ✅ |
+| Ajout d'un produit au panier | @smoke | ✅ |
+| Retrait d'un produit du panier | @regression | ✅ |
+| Parcours complet checkout | @regression | ✅ |
 
 ## Installation
 
@@ -37,47 +38,30 @@ npm install
 npx playwright install
 ```
 
-## Execution des tests
-
-Executer toute la suite:
+## Execution
 
 ```bash
+# Suite complete
 npx playwright test
-```
 
-Executer les tests avec le navigateur visible:
-
-```bash
+# Navigateur visible
 npx playwright test --headed
-```
 
-Executer un seul fichier:
+# Smoke tests uniquement
+npx playwright test --grep @smoke
 
-```bash
-npx playwright test tests/login-and-cart.spec.ts
-```
+# Tests de regression uniquement
+npx playwright test --grep @regression
 
-Ouvrir le rapport HTML:
-
-```bash
+# Rapport HTML
 npx playwright show-report
 ```
 
-## Prochaines etapes
+## Ce que ce projet demontre
 
-- ajouter un test de connexion invalide
-- couvrir le retrait d'un article du panier
-- couvrir la validation du checkout
-- separer les donnees de test et les selecteurs
-- introduire une structure Page Object Model
-- enrichir la documentation QA: cas de test, risques, hypotheses et limites
-
-## Contexte
-
-Ce projet fait partie de mon portfolio public QA et appuie mon positionnement pour des roles comme:
-
-- Analyste AQ junior
-- Software QA Analyst
-- Testeur logiciel
-
-L'idee n'est pas seulement de "faire des clics", mais de montrer une demarche de qualite: comprendre un flux utilisateur, identifier des verifications pertinentes et construire une base de regression maintenable.
+- Tests fonctionnels E2E avec Playwright et TypeScript
+- Pattern Page Object Model pour la maintenabilite et la lisibilite
+- Donnees de test separees des specs
+- Tags @smoke et @regression pour organiser les suites d'execution
+- CI/CD avec GitHub Actions — execution automatique sur push et PR
+- Captures d'ecran et video conservees automatiquement sur echec
