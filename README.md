@@ -1,6 +1,6 @@
 # Portfolio QA E2E — Playwright + TypeScript
 
-![CI](https://github.com/tiagolp22/qa-playwright-ecommerce-tests-clean/actions/workflows/playwright.yml/badge.svg)
+![CI](https://github.com/tiagolp22/qa-playwright-ecommerce-tests/actions/workflows/playwright.yml/badge.svg)
 
 Projet de portfolio en assurance qualite, axe sur l'automatisation de tests web end-to-end avec Playwright et TypeScript.
 
