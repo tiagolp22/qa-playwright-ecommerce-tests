@@ -4,7 +4,7 @@ export const users = {
     password: 'secret_sauce',
   },
   invalid: {
-    username: 'locked_out_user',
+    username: 'wrong_user',
     password: 'wrong_password',
   },
 };
