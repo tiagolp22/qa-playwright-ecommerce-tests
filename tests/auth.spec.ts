@@ -1,15 +1,21 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/login.page';
 import { users } from './data/users';
-import { loginAndCartSelectors } from './selectors/login-and-cart.selectors';
 
-test('@smoke invalid user sees an authentication error message', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com/');
+test.describe('Authentification', () => {
 
-  await page.locator(loginAndCartSelectors.usernameInput).fill(users.invalid.username);
-  await page.locator(loginAndCartSelectors.passwordInput).fill(users.invalid.password);
-  await page.locator(loginAndCartSelectors.loginButton).click();
+  test('@smoke connexion valide redirige vers la liste des produits', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login(users.standard.username, users.standard.password);
+    await expect(page).toHaveURL(/inventory/);
+  });
 
-  await expect(page.locator(loginAndCartSelectors.errorMessage)).toContainText(
-    'Username and password do not match',
-  );
+  test('@smoke identifiants invalides affichent un message d\'erreur', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login(users.invalid.username, users.invalid.password);
+    await expect(login.errorMessage).toContainText('Username and password do not match');
+  });
+
 });

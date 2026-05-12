@@ -1,17 +1,33 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/login.page';
+import { InventoryPage } from '../pages/inventory.page';
 import { users } from './data/users';
-import { loginAndCartSelectors } from './selectors/login-and-cart.selectors';
 
-test('@smoke valid user can log in and add one product to cart', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com/');
+test.describe('Panier', () => {
 
-  await page.locator(loginAndCartSelectors.usernameInput).fill(users.standard.username);
-  await page.locator(loginAndCartSelectors.passwordInput).fill(users.standard.password);
-  await page.locator(loginAndCartSelectors.loginButton).click();
+  test('@smoke ajout d\'un produit incremente le compteur du panier', async ({ page }) => {
+    const login = new LoginPage(page);
+    const inventory = new InventoryPage(page);
 
-  await expect(page).toHaveURL(/inventory/);
-  await expect(page.locator(loginAndCartSelectors.pageTitle)).toHaveText('Products');
+    await login.goto();
+    await login.login(users.standard.username, users.standard.password);
+    await expect(inventory.title).toHaveText('Products');
 
-  await page.locator(loginAndCartSelectors.addBackpackButton).click();
-  await expect(page.locator(loginAndCartSelectors.cartBadge)).toHaveText('1');
+    await inventory.addToCart('add-to-cart-sauce-labs-backpack');
+    await expect(inventory.cartBadge).toHaveText('1');
+  });
+
+  test('@regression retirer un produit remet le compteur a zero', async ({ page }) => {
+    const login = new LoginPage(page);
+    const inventory = new InventoryPage(page);
+
+    await login.goto();
+    await login.login(users.standard.username, users.standard.password);
+    await inventory.addToCart('add-to-cart-sauce-labs-backpack');
+    await expect(inventory.cartBadge).toHaveText('1');
+
+    await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
+    await expect(inventory.cartBadge).not.toBeVisible();
+  });
+
 });
